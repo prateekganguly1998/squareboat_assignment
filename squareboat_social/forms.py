@@ -63,3 +63,6 @@ class PostForm(FlaskForm):
     description = TextAreaField('Description', validators=[DataRequired()])
     image = FileField('Add a picture', validators=[FileAllowed(['jpg','png'])])
     submit = SubmitField("Post")
+
+class EmptyForm(FlaskForm):
+    submit = SubmitField('Submit')

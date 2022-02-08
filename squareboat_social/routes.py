@@ -4,7 +4,7 @@ import secrets
 from PIL import Image
 from flask import render_template, url_for, flash, redirect, request, abort
 from squareboat_social import app, db, bcrypt
-from squareboat_social.forms import RegisterForm, LoginForm, UpdateAccountForm, PostForm
+from squareboat_social.forms import RegisterForm, LoginForm, UpdateAccountForm, PostForm, EmptyForm
 from flask_login import login_user, current_user, logout_user, login_required
 from squareboat_social.models import User, Post
 import arrow
@@ -14,8 +14,14 @@ import arrow
 @app.route('/')
 @app.route('/home')
 def home():
-    posts = Post.query.all() 
-    return render_template('home.html',posts = posts)
+    posts = list() 
+    users = list()
+    form = EmptyForm()
+    if current_user.is_authenticated:
+        _following = [_user.id for _user in current_user.followed]
+        _following.append(current_user.id)
+        users = User.query.filter(User.id.not_in(tuple(_following)))
+    return render_template('home.html',posts = current_user.followed_posts(), users = users, form = form)
 
 @app.route('/about')
 def about():
@@ -142,4 +148,65 @@ def update_post(post_id):
         form.title.data  = post.title 
         form.description.data  = post.description
     return render_template('create_post.html', title = 'Update your Post', form = form, legend = 'Update Post')
+
+@app.route('/post/<int:post_id>/delete', methods = ['POST'])
+@login_required
+def delete_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    if post.author != current_user:
+            abort(403)
+    db.session.delete(post)
+    db.session.commit()
+    flash('Your post has been deleted!!', 'success')
+    return redirect(url_for('home'))
+
+
+
 #follow/unfollow post request endpoint
+@app.route('/follow/<username>', methods=['POST'])
+@login_required
+def follow(username):
+    form = EmptyForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=username).first()
+        if user is None:
+            flash('User {} not found.'.format(username))
+            return redirect(url_for('home'))
+        if user == current_user:
+            flash('You cannot follow yourself!')
+            return redirect(url_for('user', username=username))
+        current_user.follow(user)
+        db.session.commit()
+        flash('You are following {}!'.format(username))
+        return redirect(url_for('user', username=username))
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route('/unfollow/<username>', methods=['POST'])
+@login_required
+def unfollow(username):
+    form = EmptyForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=username).first()
+        if user is None:
+            flash('User {} not found.'.format(username))
+            return redirect(url_for('index'))
+        if user == current_user:
+            flash('You cannot unfollow yourself!')
+            return redirect(url_for('user', username=username))
+        current_user.unfollow(user)
+        db.session.commit()
+        flash('You are not following {}.'.format(username))
+        return redirect(url_for('user', username=username))
+    else:
+        return redirect(url_for('index'))
+
+
+# User profile post for others 
+@app.route('/user/<username>')
+@login_required
+def user(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    form = EmptyForm()
+    return render_template('user.html', user=user, form=form)
