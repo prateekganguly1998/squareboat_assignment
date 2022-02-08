@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% for post in posts %}
+    <div class="card">
+      <a  href="{{ url_for('post', post_id=post.id) }}">
+          <img class="card-img-top" src="{{ url_for('static', filename='post_pictures/' + post.image) }}">
+      </a>
+      <div class="card-body">
+        <h5 class="card-title">{{ post.title }}</h5>
+        <p class="card-text">{{ post.description }}</p>
+        
+        <div class="media-body">
+          <small class="text-muted">Posted on: {{ post.created_on.strftime('%Y-%m-%d') }}</small>
+        </div>
+        <div class="card-header">
+          <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+          Posted By: <a class="mr-2" href="#">{{ post.author.username }}</a>
+        </div>
+      </div>
+    </div>
+
+    {% endfor %}
+{% endblock content %}
