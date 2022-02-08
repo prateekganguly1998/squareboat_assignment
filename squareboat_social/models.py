@@ -55,7 +55,7 @@ class Post(db.Model):
     title = db.Column(db.String(100), nullable = False)
     created_on = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
     description = db.Column(db.Text, nullable = False)
-    image = db.Column(db.String(20), nullable = False, default = 'landscape.jpg')
+    image = db.Column(db.String(20))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
 
 

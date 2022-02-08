@@ -3,8 +3,12 @@
     {% for post in posts %}
     <div class="card">
       <a  href="{{ url_for('post', post_id=post.id) }}">
-          <img class="card-img-top" src="{{ url_for('static', filename='post_pictures/' + post.image) }}">
-      </a>
+        {%if post.image%}
+           <img class="card-img-top" src="{{ url_for('static', filename='post_pictures/' + post.image) }}">
+        {%else%}
+        <p style = "float: right;" class = "btn">Go to Post</p>
+        {%endif%}
+          </a>
       <div class="card-body">
         <h5 class="card-title">{{ post.title }}</h5>
         <p class="card-text">{{ post.description }}</p>
