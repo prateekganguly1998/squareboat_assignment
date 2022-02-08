@@ -13,7 +13,7 @@ class UserModelCase(unittest.TestCase):
         db.session.remove()
         db.drop_all()
     
-    def test_follow(self):
+    def test_following_logic(self):
         u1 = User(username='john', email='john@example.com', password = "test")
         u2 = User(username='susan', email='susan@example.com', password = "test")
         db.session.add(u1)

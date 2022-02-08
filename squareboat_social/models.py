@@ -1,6 +1,7 @@
-from squareboat_social import db, login_manager
+from squareboat_social import db, login_manager, app
 from datetime import datetime
 from flask_login import UserMixin
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 followers = db.Table(
     'followers',
@@ -26,6 +27,18 @@ class User(db.Model, UserMixin):
             primaryjoin=(followers.c.follower_id == id),
             secondaryjoin=(followers.c.followed_id == id),
             backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
+
+    def get_token(self, expires_seconds = 1800):
+        serializer = Serializer(app.config['SECRET_KEY'], expires_in=expires_seconds)
+        return serializer.dumps({'user_id':self.id}).decode('utf-8')
+    @staticmethod
+    def verify_token(token):
+        serializer = Serializer(app.config['SECRET_KEY'])
+        try:
+            user_id = serializer.loads(token)['user_id']
+        except:
+            return None
+        return User.query.get(user_id)
 
     def __repr__(self):
         return f"User('{self.username}','{self.email}', '{self.image_file}')"
@@ -62,3 +75,5 @@ class Post(db.Model):
 
     def __repr__(self):
         return f"Post('{self.title}','{self.created_on}')"
+
+

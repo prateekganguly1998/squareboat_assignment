@@ -6,7 +6,7 @@
         {%if post.image%}
            <img class="card-img-top" src="{{ url_for('static', filename='post_pictures/' + post.image) }}">
         {%else%}
-        <p style = "float: right;" class = "btn">Go to Post</p>
+        <p style = "float: right; margin-top: 2px;" class = "btn">Go to Post  &nbsp;<i class="fa fa-share"></i></p>
         {%endif%}
           </a>
       <div class="card-body">
