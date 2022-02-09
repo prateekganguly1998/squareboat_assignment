@@ -6,6 +6,7 @@ This is the repository for the assignment task to be provided before 9th Februar
 2. Reset password if forgotten at login/register page.
 3. Upload images to update display picture or post picture
 4. Dockerized image has been pushed to heroku.
+5. You get a list of users that you don't follow on a sidebar. Follow someone, to start seeing posts.
 ---
 
 ## Technical stack used:
