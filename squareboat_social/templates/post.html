@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
     <div class="card">
-      <a  href="{{ url_for('post', post_id=post.id) }}">
+      <a  href="{{ url_for('posts.post', post_id=post.id) }}">
         {%if post.image%}
         <img class="card-img-top" src="{{ url_for('static', filename='post_pictures/' + post.image) }}">
          {%endif%}
@@ -14,7 +14,7 @@
           <small class="text-muted">Posted on: {{ post.created_on.strftime('%Y-%m-%d') }}</small>
           {%if post.author == current_user%}
                 <div style="float: right;">
-                    <a  style = "padding-top: 14px;padding-left: 14px;" href="{{url_for('update_post', post_id = post.id)}}" class="btn-circle btn btn-primary btn-md m-1"><i class="fa fa-edit fa-2x" ></i></a>
+                    <a  style = "padding-top: 14px;padding-left: 14px;" href="{{url_for('posts.update_post', post_id = post.id)}}" class="btn-circle btn btn-primary btn-md m-1"><i class="fa fa-edit fa-2x" ></i></a>
                     <button style = "padding-top: 6px;padding-left: 10px;" data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn-circle btn btn-primary btn-md m-1">
                         <i class="fa fa-trash fa-2x"></i>
                 </button>
@@ -23,7 +23,7 @@
         </div>
         <div class="card-header">
           <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
-          Posted By: <a class="mr-2" href="#">{{ post.author.username }}</a>
+          Posted By: <a class="mr-2" href="{{url_for('users.user', username=post.author.username)}}">{{ post.author.username }}</a>
         </div>
       </div>
     </div>
@@ -38,7 +38,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <form action="{{url_for('delete_post', post_id=post.id)}}" method="POST">
+          <form action="{{url_for('posts.delete_post', post_id=post.id)}}" method="POST">
               <input type="submit" class = "btn btn-danger" value="Confirm">
           </form>
         </div>

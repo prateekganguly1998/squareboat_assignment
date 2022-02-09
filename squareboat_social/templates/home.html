@@ -2,7 +2,7 @@
 {% block content %}
     {% for post in posts %}
     <div class="card">
-      <a  href="{{ url_for('post', post_id=post.id) }}">
+      <a  href="{{ url_for('posts.post', post_id=post.id) }}">
         {%if post.image%}
            <img class="card-img-top" src="{{ url_for('static', filename='post_pictures/' + post.image) }}">
         {%else%}
@@ -18,7 +18,7 @@
         </div>
         <div class="card-header">
           <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
-          Posted By: <a class="mr-2" href="{{url_for('user',username=post.author.username )}}">{{ post.author.username }}</a>
+          Posted By: <a class="mr-2" href="{{url_for('users.user',username=post.author.username )}}">{{ post.author.username }}</a>
         </div>
       </div>
     </div>
